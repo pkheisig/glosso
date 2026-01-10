@@ -1,0 +1,86 @@
+#word-lookup-tooltip {
+  position: absolute;
+  display: none;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  padding: 18px;
+  z-index: 2147483647;
+  width: 400px;
+  max-height: 500px;
+  overflow-y: auto;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  color: #1f2937;
+  line-height: 1.6;
+  pointer-events: auto;
+}
+
+.rl-highlight {
+  background-color: transparent !important;
+  border-bottom: 2px dotted #aaa;
+  cursor: pointer;
+  border-radius: 2px;
+  color: inherit;
+}
+
+.rl-highlight:hover {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  border-bottom: 2px dotted #000;
+}
+
+/* Tooltip internal styles */
+.rl-definition {
+  font-size: 16px;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.rl-grammar-container table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  margin-top: 10px;
+  background: white;
+  border: 1px solid #e5e7eb;
+}
+
+#word-lookup-tooltip th,
+#word-lookup-tooltip td {
+  border: 1px solid #e5e7eb;
+  padding: 3px 5px;
+  text-align: center;
+}
+
+#word-lookup-tooltip th {
+  background-color: #f3f4f6;
+  font-weight: 600;
+}
+
+.rl-highlight-form {
+  background-color: #fef08a !important;
+  font-weight: bold;
+}
+
+.NavFrame {
+  border: 1px solid #e5e7eb;
+  margin-top: 10px;
+  border-radius: 4px;
+}
+
+.NavHead {
+  background-color: #f3f4f6;
+  padding: 4px 8px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.NavContent {
+  padding: 5px;
+}
+
+.NavToggle {
+  display: none;
+}

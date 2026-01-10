@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>WordPeek</title>
+  <style>
+    body {
+      width: 300px;
+      padding: 15px;
+      font-family: system-ui, sans-serif;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 16px;
+      margin: 0 0 8px 0;
+      color: #1f2937;
+    }
+
+    .divider {
+      border-top: 1px solid #e5e7eb;
+      margin: 12px 0;
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 8px;
+    }
+
+    .word-list {
+      max-height: 200px;
+      overflow-y: auto;
+      font-size: 11px;
+    }
+
+    .word-item {
+      padding: 4px 0;
+      border-bottom: 1px solid #f3f4f6;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .word-item:last-child {
+      border-bottom: none;
+    }
+
+    .word-text {
+      font-weight: 600;
+      color: #1f2937;
+    }
+
+    .word-trans {
+      color: #6b7280;
+      font-style: italic;
+      margin-left: 8px;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .btn {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background: #1d4ed8;
+    }
+
+    .btn-outline {
+      background: white;
+      color: #374151;
+      border: 1px solid #d1d5db;
+    }
+
+    .btn-outline:hover {
+      background: #f3f4f6;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .empty {
+      color: #9ca3af;
+      font-size: 11px;
+      font-style: italic;
+    }
+
+    .count {
+      font-size: 10px;
+      color: #9ca3af;
+    }
+
+    .lang-label {
+      font-size: 10px;
+      color: #6b7280;
+      margin-bottom: 2px;
+    }
+
+    .lang-picker {
+      position: relative;
+      margin-bottom: 8px;
+    }
+
+    .lang-selected {
+      padding: 6px 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      background: white;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .lang-selected:hover {
+      border-color: #9ca3af;
+    }
+
+    .lang-dropdown {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      margin-top: 2px;
+      max-height: 250px;
+      overflow-y: auto;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .lang-dropdown.open {
+      display: block;
+    }
+
+    .lang-search {
+      width: calc(100% - 16px);
+      margin: 8px;
+      padding: 6px 8px;
+      border: 1px solid #e5e7eb;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+
+    .lang-list {
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    .lang-item {
+      padding: 6px 12px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .lang-item:hover {
+      background: #f3f4f6;
+    }
+
+    .lang-item.selected {
+      background: #eff6ff;
+      color: #2563eb;
+    }
+
+    .lang-more {
+      padding: 6px 12px;
+      font-size: 10px;
+      color: #6b7280;
+      cursor: pointer;
+      border-top: 1px solid #e5e7eb;
+      text-align: center;
+    }
+
+    .lang-more:hover {
+      background: #f9fafb;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>WordPeek</h1>
+
+  <div class="lang-label">Learning</div>
+  <div class="lang-picker" id="langPicker">
+    <div class="lang-selected" id="langSelected">
+      <span id="langText">Russian</span>
+      <span>▼</span>
+    </div>
+    <div class="lang-dropdown" id="langDropdown">
+      <input type="text" class="lang-search" id="langSearch" placeholder="Search languages...">
+      <div class="lang-list" id="langList"></div>
+      <div class="lang-more" id="langMore">Show more languages...</div>
+    </div>
+  </div>
+
+  <div style="display:flex; align-items:center; margin-bottom: 8px;">
+    <input type="checkbox" id="showGrammar" checked style="margin-right:6px;">
+    <label for="showGrammar" style="font-size:11px; color:#374151; user-select:none;">Show grammar tables</label>
+  </div>
+
+  <div class="divider"></div>
+
+  <div style="display:flex; justify-content:space-between; align-items:center;">
+    <div class="section-title">Saved Words</div>
+    <div class="count" id="count"></div>
+  </div>
+  <div class="word-list" id="wordList">
+    <div class="empty">No words saved yet</div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn" id="export">Export CSV</button>
+    <button class="btn btn-outline" id="clear">Clear All</button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+
+</html>

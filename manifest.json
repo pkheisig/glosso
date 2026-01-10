@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "WordPeek",
+  "version": "1.0.0",
+  "description": "Hover over words to see translations and grammar info.",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://en.wiktionary.org/*",
+    "https://ru.wiktionary.org/*",
+    "https://script.google.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "options_page": "options.html",
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "styles.css"
+      ]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
