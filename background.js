@@ -6,7 +6,7 @@
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: 'wordpeek-lookup',
-    title: 'Look up "%s" in WordPeek',
+    title: 'Look up "%s" in Wiktionary',
     contexts: ['selection']
   });
 });
