@@ -1,4 +1,4 @@
-#russian-lookup-tooltip {
+#word-lookup-tooltip {
   position: absolute;
   display: none;
   background-color: white;
@@ -17,39 +17,27 @@
   pointer-events: auto;
 }
 
-.russian-word-mark {
-  background-color: transparent;
-  border-bottom: 1px dotted #666;
-  cursor: default;
+.rl-highlight {
+  background-color: transparent !important;
+  border-bottom: 2px dotted #aaa;
+  cursor: pointer;
   border-radius: 2px;
+  color: inherit;
 }
 
-.russian-word-mark:hover {
-  background-color: transparent;
-  border-bottom: 1px dotted #000;
+.rl-highlight:hover {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  border-bottom: 2px dotted #000;
 }
 
 /* Tooltip internal styles */
-.rl-header {
-  margin-bottom: 12px;
-  border-bottom: 1px solid #f3f4f6;
-  padding-bottom: 8px;
-}
-
-.rl-word {
-  font-size: 24px;
-  font-weight: 800;
-  color: #111827;
-}
-
-.rl-translation {
+.rl-definition {
   font-size: 16px;
   color: #374151;
-  font-style: italic;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
-.rl-grammar-table, #russian-lookup-tooltip table {
+.rl-grammar-container table {
   width: 100%;
   border-collapse: collapse;
   font-size: 11px;
@@ -58,18 +46,19 @@
   border: 1px solid #e5e7eb;
 }
 
-#russian-lookup-tooltip th, #russian-lookup-tooltip td {
+#word-lookup-tooltip th,
+#word-lookup-tooltip td {
   border: 1px solid #e5e7eb;
   padding: 3px 5px;
   text-align: center;
 }
 
-#russian-lookup-tooltip th {
+#word-lookup-tooltip th {
   background-color: #f3f4f6;
   font-weight: 600;
 }
 
-#russian-lookup-tooltip .highlight-form {
+.rl-highlight-form {
   background-color: #fef08a !important;
   font-weight: bold;
 }
@@ -94,13 +83,4 @@
 
 .NavToggle {
   display: none;
-}
-
-.rl-loading {
-  text-align: center;
-  padding: 20px;
-}
-
-.rl-error {
-  color: #ef4444;
 }
