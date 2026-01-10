@@ -1,4 +1,5 @@
 var popularLangs = [
+    { code: 'auto', name: 'Auto-detect' },
     { code: 'es', name: 'Spanish' }, { code: 'fr', name: 'French' }, { code: 'de', name: 'German' },
     { code: 'ru', name: 'Russian' }, { code: 'pt', name: 'Portuguese' }, { code: 'it', name: 'Italian' },
     { code: 'nl', name: 'Dutch' }, { code: 'pl', name: 'Polish' },

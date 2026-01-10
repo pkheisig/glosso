@@ -190,12 +190,10 @@ function processParseData(word, parseJson, depth) {
   let langHeader = doc.querySelector(`#${langSectionId}`);
   if (langHeader && langHeader.tagName !== 'H2') langHeader = langHeader.closest('h2');
 
-  // Hybrid Fallback: If preferred language not found, use the first available language section.
-  // This supports "Auto-Detection" for words that only exist in one language (e.g. Ukrainian "угорського")
-  // while preserving preference for ambiguous words (e.g. "die" -> English vs German).
-  if (!langHeader) {
+  // Fallback to first available language ONLY if user chose "auto" mode
+  // Otherwise, respect their language choice strictly
+  if (!langHeader && currentLang === 'auto') {
     const allH2 = Array.from(doc.querySelectorAll('h2'));
-    // Filter out potential non-language headers if necessary (usually H2 is safe on parsing)
     if (allH2.length > 0) {
       langHeader = allH2[0];
     }
@@ -283,8 +281,9 @@ function processParseData(word, parseJson, depth) {
 
 
 function getLangSectionId(lang) {
-  const map = { ru: 'Russian', uk: 'Ukrainian', de: 'German', fr: 'French', es: 'Spanish', it: 'Italian', pt: 'Portuguese', pl: 'Polish', nl: 'Dutch', sv: 'Swedish' };
-  return map[lang] || 'Russian';
+  if (lang === 'auto') return null; // Auto-detect: no specific section, rely on fallback
+  const map = { ru: 'Russian', uk: 'Ukrainian', de: 'German', fr: 'French', es: 'Spanish', it: 'Italian', pt: 'Portuguese', pl: 'Polish', nl: 'Dutch', sv: 'Swedish', el: 'Greek', tr: 'Turkish', cs: 'Czech', sk: 'Slovak', hu: 'Hungarian', ro: 'Romanian', bg: 'Bulgarian', sr: 'Serbian', hr: 'Croatian', sl: 'Slovenian', fi: 'Finnish', da: 'Danish', no: 'Norwegian', is: 'Icelandic', lt: 'Lithuanian', lv: 'Latvian', et: 'Estonian', sq: 'Albanian', ca: 'Catalan', eu: 'Basque', cy: 'Welsh', ga: 'Irish', id: 'Indonesian', ms: 'Malay', tl: 'Tagalog', sw: 'Swahili', af: 'Afrikaans', la: 'Latin', grc: 'Ancient_Greek', eo: 'Esperanto', be: 'Belarusian', mk: 'Macedonian', ka: 'Georgian', hy: 'Armenian', az: 'Azerbaijani', kk: 'Kazakh', uz: 'Uzbek' };
+  return map[lang] || null;
 }
 
 function processAndAppendTable(table, container, targetWord) {
