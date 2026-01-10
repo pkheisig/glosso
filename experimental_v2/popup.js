@@ -1,11 +1,10 @@
 var popularLangs = [
     { code: 'es', name: 'Spanish' }, { code: 'fr', name: 'French' }, { code: 'de', name: 'German' },
-    { code: 'zh', name: 'Chinese' }, { code: 'ja', name: 'Japanese' }, { code: 'ru', name: 'Russian' },
-    { code: 'pt', name: 'Portuguese' }, { code: 'it', name: 'Italian' }, { code: 'ko', name: 'Korean' },
-    { code: 'ar', name: 'Arabic' }, { code: 'nl', name: 'Dutch' }, { code: 'pl', name: 'Polish' },
-    { code: 'tr', name: 'Turkish' }, { code: 'vi', name: 'Vietnamese' }, { code: 'th', name: 'Thai' },
-    { code: 'sv', name: 'Swedish' }, { code: 'el', name: 'Greek' }, { code: 'he', name: 'Hebrew' },
-    { code: 'uk', name: 'Ukrainian' }, { code: 'hi', name: 'Hindi' }
+    { code: 'ru', name: 'Russian' }, { code: 'pt', name: 'Portuguese' }, { code: 'it', name: 'Italian' },
+    { code: 'nl', name: 'Dutch' }, { code: 'pl', name: 'Polish' },
+    { code: 'tr', name: 'Turkish' },
+    { code: 'sv', name: 'Swedish' }, { code: 'el', name: 'Greek' },
+    { code: 'uk', name: 'Ukrainian' }
 ];
 
 var allLangs = [
@@ -16,16 +15,13 @@ var allLangs = [
     { code: 'da', name: 'Danish' }, { code: 'no', name: 'Norwegian' }, { code: 'is', name: 'Icelandic' },
     { code: 'lt', name: 'Lithuanian' }, { code: 'lv', name: 'Latvian' }, { code: 'et', name: 'Estonian' },
     { code: 'sq', name: 'Albanian' }, { code: 'ca', name: 'Catalan' }, { code: 'eu', name: 'Basque' },
-    { code: 'cy', name: 'Welsh' }, { code: 'ga', name: 'Irish' }, { code: 'bn', name: 'Bengali' },
+    { code: 'cy', name: 'Welsh' }, { code: 'ga', name: 'Irish' },
     { code: 'id', name: 'Indonesian' }, { code: 'ms', name: 'Malay' }, { code: 'tl', name: 'Tagalog' },
-    { code: 'fa', name: 'Persian' }, { code: 'ur', name: 'Urdu' }, { code: 'ta', name: 'Tamil' },
-    { code: 'te', name: 'Telugu' }, { code: 'pa', name: 'Punjabi' }, { code: 'mn', name: 'Mongolian' },
     { code: 'sw', name: 'Swahili' }, { code: 'af', name: 'Afrikaans' }, { code: 'la', name: 'Latin' },
-    { code: 'grc', name: 'Ancient Greek' }, { code: 'sa', name: 'Sanskrit' }, { code: 'eo', name: 'Esperanto' },
+    { code: 'grc', name: 'Ancient Greek' }, { code: 'eo', name: 'Esperanto' },
     { code: 'be', name: 'Belarusian' }, { code: 'mk', name: 'Macedonian' }, { code: 'ka', name: 'Georgian' },
     { code: 'hy', name: 'Armenian' }, { code: 'az', name: 'Azerbaijani' }, { code: 'kk', name: 'Kazakh' },
-    { code: 'uz', name: 'Uzbek' }, { code: 'ne', name: 'Nepali' }, { code: 'si', name: 'Sinhala' },
-    { code: 'km', name: 'Khmer' }, { code: 'my', name: 'Burmese' }, { code: 'lo', name: 'Lao' }
+    { code: 'uz', name: 'Uzbek' }
 ].sort((a, b) => a.name.localeCompare(b.name));
 
 var showAll = false;
