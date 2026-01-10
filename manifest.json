@@ -4,7 +4,8 @@
     "version": "2.0",
     "description": "Instant definitions from Wiktionary with robust multi-language support.",
     "permissions": [
-        "storage"
+        "storage",
+        "contextMenus"
     ],
     "host_permissions": [
         "https://en.wiktionary.org/*"
@@ -14,7 +15,12 @@
     },
     "action": {
         "default_popup": "popup.html",
-        "default_title": "WordPeek Settings"
+        "default_title": "WordPeek Settings",
+        "default_icon": {
+            "16": "icon16.png",
+            "48": "icon48.png",
+            "128": "icon128.png"
+        }
     },
     "content_scripts": [
         {
@@ -30,8 +36,8 @@
         }
     ],
     "icons": {
-        "16": "icon.png",
-        "48": "icon.png",
-        "128": "icon.png"
+        "16": "icon16.png",
+        "48": "icon48.png",
+        "128": "icon128.png"
     }
 }

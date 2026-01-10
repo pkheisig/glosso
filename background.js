@@ -2,6 +2,22 @@
 // Minimal proxy to fetch Wiktionary Parse API data to avoid CORS
 // and let content.js handle the parsing logic.
 
+// Context Menu for PDF and other contexts
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.contextMenus.create({
+    id: 'wordpeek-lookup',
+    title: 'Look up "%s" in WordPeek',
+    contexts: ['selection']
+  });
+});
+
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  if (info.menuItemId === 'wordpeek-lookup' && info.selectionText) {
+    const word = info.selectionText.trim();
+    chrome.tabs.create({ url: `https://en.wiktionary.org/wiki/${encodeURIComponent(word)}` });
+  }
+});
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'fetchWordData') {
     handleFetch(request.word).then(sendResponse);
