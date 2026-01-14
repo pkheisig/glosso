@@ -13,33 +13,73 @@ let currentLang = 'es'; // Default, updated on init
 const wordRegex = /[\p{Script=Latin}\p{Script=Cyrillic}\p{Script=Greek}\p{M}\u0027\u2019\-\u00AD]{2,}/gu;
 
 // UI Logic
+let isEnabled = false;
+
 function init() {
   chrome.storage.sync.get(['enabled', 'language'], (data) => {
+    currentLang = data.language || 'es';
     if (data.enabled !== false) {
-      currentLang = data.language || 'es';
-
-      highlightWords();
-
-      // Listen for manual selection
-      document.addEventListener('mouseup', handleSelection);
+      enableExtension();
     }
   });
 
-  document.addEventListener('mousemove', (e) => {
-    if (tooltip.style.display === 'block') {
-      const rect = tooltip.getBoundingClientRect();
-      const pad = 20;
-      if (e.clientX < rect.left - pad || e.clientX > rect.right + pad ||
-        e.clientY < rect.top - pad || e.clientY > rect.bottom + pad) {
-        startHideTimer();
+  // Listen for dynamic toggle changes
+  chrome.storage.onChanged.addListener((changes, namespace) => {
+    if (namespace === 'sync' && changes.enabled) {
+      if (changes.enabled.newValue) {
+        enableExtension();
       } else {
-        if (hideTimeout) clearTimeout(hideTimeout);
+        disableExtension();
       }
+    }
+    if (namespace === 'sync' && changes.language) {
+        currentLang = changes.language.newValue;
+        // Optionally re-highlight or just update for next interaction
     }
   });
 }
 
+function enableExtension() {
+  if (isEnabled) return;
+  isEnabled = true;
+  highlightWords();
+  document.addEventListener('mouseup', handleSelection);
+  document.addEventListener('mousemove', handleMouseMove);
+}
+
+function disableExtension() {
+  if (!isEnabled) return;
+  isEnabled = false;
+  removeHighlights();
+  document.removeEventListener('mouseup', handleSelection);
+  document.removeEventListener('mousemove', handleMouseMove);
+  tooltip.style.display = 'none';
+}
+
+function handleMouseMove(e) {
+  if (tooltip.style.display === 'block') {
+    const rect = tooltip.getBoundingClientRect();
+    const pad = 20;
+    if (e.clientX < rect.left - pad || e.clientX > rect.right + pad ||
+      e.clientY < rect.top - pad || e.clientY > rect.bottom + pad) {
+      startHideTimer();
+    } else {
+      if (hideTimeout) clearTimeout(hideTimeout);
+    }
+  }
+}
+
+function removeHighlights() {
+  const highlights = document.querySelectorAll('.rl-highlight');
+  highlights.forEach(mark => {
+    const text = document.createTextNode(mark.textContent);
+    mark.parentNode.replaceChild(text, mark);
+  });
+  document.body.normalize(); // Merge adjacent text nodes
+}
+
 function handleSelection(e) {
+  if (!isEnabled) return;
   if (e.target.closest('#word-lookup-tooltip')) return;
   const selection = window.getSelection();
   const text = selection.toString().trim().replace(/\u00AD/g, '');
@@ -60,6 +100,7 @@ function handleSelection(e) {
 }
 
 function highlightWords() {
+  if (!isEnabled) return;
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
     acceptNode: (node) => {
       if (['SCRIPT', 'STYLE', 'TEXTAREA', 'INPUT', 'MARK'].includes(node.parentNode.tagName)) return NodeFilter.FILTER_REJECT;

@@ -84,7 +84,19 @@ document.addEventListener('click', function (e) {
     }
 });
 
-chrome.storage.sync.get(['language', 'showGrammar'], function (result) {
+// Enable/Disable Toggle Logic
+var enableToggle = document.getElementById('enableToggle');
+var statusText = document.getElementById('statusText');
+
+function updateStatusText() {
+    statusText.textContent = enableToggle.checked ? 'ON' : 'OFF';
+}
+
+chrome.storage.sync.get(['enabled', 'language', 'showGrammar'], function (result) {
+    // Default to true if undefined
+    enableToggle.checked = (result.enabled !== false);
+    updateStatusText();
+
     if (result.language) {
         currentLang = result.language;
         var lang = allLangs.find(l => l.code === result.language);
@@ -92,6 +104,11 @@ chrome.storage.sync.get(['language', 'showGrammar'], function (result) {
     }
     // Default to true if undefined
     document.getElementById('showGrammar').checked = (result.showGrammar !== false);
+});
+
+enableToggle.addEventListener('change', function (e) {
+    chrome.storage.sync.set({ enabled: e.target.checked });
+    updateStatusText();
 });
 
 document.getElementById('showGrammar').addEventListener('change', function (e) {

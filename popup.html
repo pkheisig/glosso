@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>WordPeek</title>
+  <title>Glosso</title>
   <style>
     body {
       width: 300px;
@@ -195,7 +195,63 @@
 </head>
 
 <body>
-  <h1>WordPeek</h1>
+  <h1>Glosso</h1>
+
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
+    <span id="statusText" style="font-size:12px; color:#374151; font-weight:600;">ON</span>
+    <label class="switch">
+      <input type="checkbox" id="enableToggle" checked>
+      <span class="slider round"></span>
+    </label>
+  </div>
+
+  <style>
+    /* Switch styles */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 36px;
+      height: 20px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 20px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked+.slider {
+      background-color: #2563eb;
+    }
+
+    input:checked+.slider:before {
+      transform: translateX(16px);
+    }
+  </style>
 
   <div class="lang-label">Learning</div>
   <div class="lang-picker" id="langPicker">

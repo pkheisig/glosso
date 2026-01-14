@@ -1,4 +1,4 @@
-# WordPeek - Wiktionary Lookup Extension
+# Glosso
 
 A Chrome extension for instant definitions from Wiktionary with multi-language support.
 
