@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glosso Flashcards</title>
+  <link rel="stylesheet" href="flashcards.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h1>Glosso</h1>
+      </div>
+
+      <div class="sidebar-actions">
+        <label class="btn btn-primary">
+          <span class="icon">↑</span> Import CSV
+          <input type="file" id="csvInput" accept=".csv,.txt" hidden>
+        </label>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="section-header">Decks</div>
+        <div class="deck-list" id="deckList">
+          <div class="empty-state">No decks yet</div>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <button id="toggleTheme" class="btn-icon" title="Toggle theme">◐</button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <!-- Empty State -->
+      <div id="emptyState" class="empty-main">
+        <div class="empty-icon">📚</div>
+        <h2>Ready to Study?</h2>
+        <p>Import a CSV file or create a deck from saved words in the Glosso popup.</p>
+      </div>
+
+      <!-- Study Area -->
+      <div id="studyArea" class="study-area" style="display: none;">
+        <!-- Toolbar -->
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <h2 id="deckTitle" class="deck-title">Deck Name</h2>
+            <span id="cardCount" class="card-count">(0 cards)</span>
+          </div>
+          <div class="toolbar-center">
+            <div class="mode-toggle">
+              <button id="modeFlashcard" class="mode-btn active">Flashcards</button>
+              <button id="modeList" class="mode-btn">List</button>
+            </div>
+          </div>
+          <div class="toolbar-right">
+            <button id="shuffleBtn" class="btn-icon" title="Shuffle">🔀</button>
+            <button id="flipDirection" class="btn-icon" title="Flip direction">⇄</button>
+            <button id="editDeck" class="btn-icon" title="Edit deck">✏️</button>
+          </div>
+        </div>
+
+        <!-- Flashcard Mode -->
+        <div id="flashcardMode" class="flashcard-container">
+          <div class="progress-container">
+            <div class="progress-bar">
+              <div id="progressFill" class="progress-fill"></div>
+            </div>
+            <span id="progressText" class="progress-text">1 / 10</span>
+          </div>
+
+          <div class="flashcard-wrapper">
+            <button id="starBtn" class="star-btn" title="Star this card">☆</button>
+            <div id="flashcard" class="flashcard">
+              <div class="flashcard-inner">
+                <div class="flashcard-front">
+                  <span class="card-text" id="cardFront">Term</span>
+                </div>
+                <div class="flashcard-back">
+                  <span class="card-text" id="cardBack">Definition</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="nav-buttons">
+            <button id="prevBtn" class="nav-btn" disabled>←</button>
+            <span class="nav-hint">Space to flip</span>
+            <button id="nextBtn" class="nav-btn">→</button>
+          </div>
+        </div>
+
+        <!-- List Mode -->
+        <div id="listMode" class="list-container" style="display: none;">
+          <div class="list-toolbar">
+            <div class="search-box">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="searchInput" placeholder="Search cards...">
+            </div>
+            <button id="revealAllBtn" class="btn btn-secondary">Reveal All</button>
+          </div>
+          <div id="cardList" class="card-list"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Edit Modal -->
+  <div id="editModal" class="modal" style="display: none;">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Edit Deck</h3>
+        <button class="modal-close" data-close="editModal">×</button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="editDeckName" class="input" placeholder="Deck name">
+        <div id="cardEditor" class="card-editor"></div>
+        <button id="addCardBtn" class="btn btn-secondary">+ Add Card</button>
+      </div>
+      <div class="modal-footer">
+        <button id="deleteDeck" class="btn btn-danger">Delete Deck</button>
+        <button id="saveChanges" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CSV Import Modal -->
+  <div id="csvModal" class="modal" style="display: none;">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Import CSV</h3>
+        <button class="modal-close" data-close="csvModal">×</button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="csvDeckName" class="input" placeholder="Deck name">
+        <div class="column-mapping">
+          <div class="mapping-row">
+            <label>Term column:</label>
+            <select id="termColumn" class="select"></select>
+          </div>
+          <div class="mapping-row">
+            <label>Definition column:</label>
+            <select id="defColumn" class="select"></select>
+          </div>
+        </div>
+        <div id="csvPreview" class="csv-preview"></div>
+      </div>
+      <div class="modal-footer">
+        <button id="cancelCsv" class="btn btn-secondary">Cancel</button>
+        <button id="confirmCsv" class="btn btn-primary">Import</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="flashcards.js"></script>
+</body>
+
+</html>

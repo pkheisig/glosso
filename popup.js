@@ -136,8 +136,8 @@ function loadWords() {
             var originalIndex = words.length - 1 - index;
             return '<div class="word-item">' +
                 '<div class="word-content">' +
-                    '<span class="word-text">' + w.base + '</span>' +
-                    '<span class="word-trans">' + (w.translation || '') + '</span>' +
+                '<span class="word-text">' + w.base + '</span>' +
+                '<span class="word-trans">' + (w.translation || '') + '</span>' +
                 '</div>' +
                 '<span class="word-delete" data-index="' + originalIndex + '">×</span>' +
                 '</div>';
@@ -145,10 +145,10 @@ function loadWords() {
     });
 }
 
-document.getElementById('wordList').addEventListener('click', function(e) {
+document.getElementById('wordList').addEventListener('click', function (e) {
     if (e.target.classList.contains('word-delete')) {
         var index = parseInt(e.target.dataset.index, 10);
-        chrome.storage.local.get(['savedWords'], function(result) {
+        chrome.storage.local.get(['savedWords'], function (result) {
             var words = result.savedWords || [];
             if (index >= 0 && index < words.length) {
                 words.splice(index, 1);
@@ -181,3 +181,37 @@ document.getElementById('clear').addEventListener('click', function () {
 });
 
 loadWords();
+
+document.getElementById('createDeck').addEventListener('click', function () {
+    chrome.storage.local.get(['savedWords'], function (result) {
+        var words = result.savedWords || [];
+        if (words.length === 0) {
+            alert('No saved words to create a deck from!');
+            return;
+        }
+        var deck = {
+            id: Date.now().toString(),
+            name: 'Saved Words ' + new Date().toLocaleDateString(),
+            cards: words.map(function (w) {
+                return {
+                    id: Date.now().toString() + Math.random(),
+                    term: w.base || w.word,
+                    definition: w.translation || '',
+                    starred: false
+                };
+            }),
+            created: Date.now()
+        };
+        chrome.storage.local.get(['flashcardDecks'], function (result2) {
+            var decks = result2.flashcardDecks || [];
+            decks.push(deck);
+            chrome.storage.local.set({ flashcardDecks: decks }, function () {
+                chrome.tabs.create({ url: 'flashcards.html' });
+            });
+        });
+    });
+});
+
+document.getElementById('openFlashcards').addEventListener('click', function () {
+    chrome.tabs.create({ url: 'flashcards.html' });
+});
