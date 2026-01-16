@@ -125,23 +125,48 @@ function loadWords() {
         var words = result.savedWords || [];
         var list = document.getElementById('wordList');
         var count = document.getElementById('count');
+
+        list.innerHTML = ''; // Clear list
+
         if (words.length === 0) {
-            list.innerHTML = '<div class="empty">No words saved yet</div>';
+            var empty = document.createElement('div');
+            empty.className = 'empty';
+            empty.textContent = 'No words saved yet';
+            list.appendChild(empty);
             count.textContent = '';
             return;
         }
         count.textContent = words.length + ' words';
-        list.innerHTML = words.slice().reverse().map(function (w, index) {
-            // Store original index for deletion (since we reverse the display)
-            var originalIndex = words.length - 1 - index;
-            return '<div class="word-item">' +
-                '<div class="word-content">' +
-                    '<span class="word-text">' + w.base + '</span>' +
-                    '<span class="word-trans">' + (w.translation || '') + '</span>' +
-                '</div>' +
-                '<span class="word-delete" data-index="' + originalIndex + '">×</span>' +
-                '</div>';
-        }).join('');
+
+        // Reverse iteration to show newest first
+        for (var i = words.length - 1; i >= 0; i--) {
+            var w = words[i];
+            var item = document.createElement('div');
+            item.className = 'word-item';
+
+            var content = document.createElement('div');
+            content.className = 'word-content';
+
+            var base = document.createElement('span');
+            base.className = 'word-text';
+            base.textContent = w.base;
+
+            var trans = document.createElement('span');
+            trans.className = 'word-trans';
+            trans.textContent = w.translation || '';
+
+            content.appendChild(base);
+            content.appendChild(trans);
+
+            var del = document.createElement('span');
+            del.className = 'word-delete';
+            del.dataset.index = i; // Use original index
+            del.textContent = '×';
+
+            item.appendChild(content);
+            item.appendChild(del);
+            list.appendChild(item);
+        }
     });
 }
 
