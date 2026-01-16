@@ -4,10 +4,12 @@
 
 // Context Menu for PDF and other contexts
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.contextMenus.create({
-    id: 'wordpeek-lookup',
-    title: 'Look up "%s" in Wiktionary',
-    contexts: ['selection']
+  chrome.contextMenus.removeAll(() => {
+    chrome.contextMenus.create({
+      id: 'wordpeek-lookup',
+      title: 'Look up "%s" in Wiktionary',
+      contexts: ['selection']
+    });
   });
 });
 
