@@ -30,6 +30,15 @@
   border-bottom: 2px dotted #000;
 }
 
+.rl-hide-underline {
+  border-bottom: none !important;
+}
+
+.rl-hide-underline:hover {
+  border-bottom: none !important;
+  background-color: transparent !important;
+}
+
 /* Tooltip internal styles */
 .rl-definition {
   font-size: 16px;

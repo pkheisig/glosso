@@ -6,7 +6,7 @@ document.body.appendChild(tooltip);
 let cache = new Map();
 let hideTimeout, showTimeout;
 let lastHoveredWord = null;
-let currentLang = 'es'; // Default, updated on init
+let currentLang = 'auto'; // Default, updated on init
 
 // Regex patterns (Restricted Unicode: Latin, Cyrillic, Greek)
 // Excludes Asian scripts (Han, Kana, etc.) which require special segmentation.
@@ -14,10 +14,19 @@ const wordRegex = /[\p{Script=Latin}\p{Script=Cyrillic}\p{Script=Greek}\p{M}\u00
 
 // UI Logic
 let isEnabled = false;
+let highlightEnabled = true;
 
 function init() {
-  chrome.storage.sync.get(['enabled', 'language'], (data) => {
-    currentLang = data.language || 'es';
+  chrome.storage.sync.get(['enabled', 'language', 'highlightWords'], (data) => {
+    currentLang = data.language;
+    // Fix: If 'en' was stored or language is missing, default to 'auto'
+    if (!currentLang || currentLang === 'en') {
+        currentLang = 'auto';
+        // Optional: Correct the storage to avoid future checks
+        chrome.storage.sync.set({ language: 'auto' });
+    }
+    
+    highlightEnabled = data.highlightWords !== false;
     if (data.enabled !== false) {
       enableExtension();
     }
@@ -35,6 +44,16 @@ function init() {
     if (namespace === 'sync' && changes.language) {
         currentLang = changes.language.newValue;
         // Optionally re-highlight or just update for next interaction
+    }
+    if (namespace === 'sync' && changes.highlightWords) {
+        highlightEnabled = changes.highlightWords.newValue;
+        if (isEnabled) {
+            const marks = document.querySelectorAll('.rl-highlight');
+            marks.forEach(m => {
+                if (highlightEnabled) m.classList.remove('rl-hide-underline');
+                else m.classList.add('rl-hide-underline');
+            });
+        }
     }
   });
 }
@@ -59,7 +78,7 @@ function disableExtension() {
 function handleMouseMove(e) {
   if (tooltip.style.display === 'block') {
     const rect = tooltip.getBoundingClientRect();
-    const pad = 20;
+    const pad = 40; // Increased from 20 to 40
     if (e.clientX < rect.left - pad || e.clientX > rect.right + pad ||
       e.clientY < rect.top - pad || e.clientY > rect.bottom + pad) {
       startHideTimer();
@@ -127,6 +146,7 @@ function highlightWords() {
       const word = match[0];
       const mark = document.createElement('mark');
       mark.className = 'rl-highlight';
+      if (!highlightEnabled) mark.classList.add('rl-hide-underline');
       mark.textContent = word;
       const cleanLookup = word.replace(/\u00AD/g, '');
       mark.addEventListener('mouseenter', (e) => handleInteraction(e, cleanLookup));
@@ -209,6 +229,17 @@ async function fetchData(word, depth = 0) {
     }
 
     if (depth === 0) {
+      // If result is effectively empty (e.g. English only was filtered out), handle it
+      if (!result.definition && !result.baseDefinition) {
+        cache.set(word, null); // Cache as null/ignore
+        if (lastHoveredWord === word) {
+           tooltip.style.display = 'none';
+        }
+        // If it was English-only (implied by empty result in auto mode), remove highlight
+        unhighlightWord(word);
+        return null;
+      }
+
       cache.set(word, result);
       if (lastHoveredWord === word) renderData(word, result);
     }
@@ -219,6 +250,19 @@ async function fetchData(word, depth = 0) {
     if (depth === 0) renderError(word, `Error: ${err.message}`);
     return null;
   }
+}
+
+function unhighlightWord(word) {
+    // Find all marks with this text and revert them
+    const marks = document.querySelectorAll('.rl-highlight');
+    const targetText = word.toLowerCase();
+    marks.forEach(mark => {
+        if (mark.textContent.trim().toLowerCase() === targetText) {
+            const text = document.createTextNode(mark.textContent);
+            mark.parentNode.replaceChild(text, mark);
+        }
+    });
+    // Optional: normalize to merge text nodes, but might be expensive on full body
 }
 
 function processParseData(word, parseJson, depth) {
@@ -235,8 +279,14 @@ function processParseData(word, parseJson, depth) {
   // Otherwise, respect their language choice strictly
   if (!langHeader && currentLang === 'auto') {
     const allH2 = Array.from(doc.querySelectorAll('h2'));
-    if (allH2.length > 0) {
-      langHeader = allH2[0];
+    // Find first H2 that is NOT "English"
+    const targetH2 = allH2.find(h => {
+        // Wiktionary H2 text is usually inside a span.mw-headline, but textContent catches it.
+        return !h.textContent.includes('English'); 
+    });
+    
+    if (targetH2) {
+      langHeader = targetH2;
     }
   }
 
@@ -385,9 +435,9 @@ function renderData(word, data) {
       </div>
       <div style="display:flex; gap:4px;">
         <a href="https://en.wiktionary.org/wiki/${word}" target="_blank" style="font-size:11px; text-decoration:none; color:#3b82f6; border:1px solid #dbeafe; padding:2px 6px; border-radius:4px;">Wiktionary</a>
-        <button id="rl-google-btn" style="font-size:11px; background:white; border:1px solid #e5e7eb; padding:2px 6px; border-radius:4px; cursor:pointer;">Google</button>
-        <button id="rl-copy-btn" style="font-size:11px; background:white; border:1px solid #e5e7eb; padding:2px 6px; border-radius:4px; cursor:pointer;">Copy</button>
-        <button id="rl-save-btn" style="font-size:11px; background:white; border:1px solid #e5e7eb; padding:2px 6px; border-radius:4px; cursor:pointer;">Save</button>
+        <button id="rl-google-btn" style="font-size:11px; color:#374151; background:white; border:1px solid #e5e7eb; padding:2px 6px; border-radius:4px; cursor:pointer;">Google</button>
+        <button id="rl-copy-btn" style="font-size:11px; color:#374151; background:white; border:1px solid #e5e7eb; padding:2px 6px; border-radius:4px; cursor:pointer;">Copy</button>
+        <button id="rl-save-btn" style="font-size:11px; color:#374151; background:white; border:1px solid #e5e7eb; padding:2px 6px; border-radius:4px; cursor:pointer;">Save</button>
       </div>
     </div>
     ${defHtml}
@@ -399,11 +449,43 @@ function renderData(word, data) {
     window.open(`https://www.google.com/search?q=define+${encodeURIComponent(query)}`, '_blank');
   });
 
-  document.getElementById('rl-copy-btn').addEventListener('click', () => {
+  const copyBtn = document.getElementById('rl-copy-btn');
+  copyBtn.addEventListener('click', () => {
     navigator.clipboard.writeText(data.lemma || word);
+    copyBtn.textContent = 'Copied!';
+    copyBtn.style.background = '#dcfce7'; // Light green
+    copyBtn.style.color = '#166534';
+    setTimeout(() => {
+        copyBtn.textContent = 'Copy';
+        copyBtn.style.background = 'white';
+        copyBtn.style.color = '#374151';
+    }, 2000);
   });
-  document.getElementById('rl-save-btn').addEventListener('click', () => {
-    // Save logic...
+  
+  const saveBtn = document.getElementById('rl-save-btn');
+  saveBtn.addEventListener('click', () => {
+    const plainDef = (data.lemma && data.baseDefinition ? data.baseDefinition : data.definition)
+      .replace(/<[^>]*>/g, '') // Strip HTML tags
+      .replace(/\s+/g, ' ')    // Normalize whitespace
+      .trim();
+
+    const entry = {
+      word: word,
+      base: data.lemma || word,
+      translation: plainDef
+    };
+
+    chrome.runtime.sendMessage({ action: 'saveWord', entry: entry }, (response) => {
+      if (response && response.success) {
+        saveBtn.textContent = 'Saved!';
+        saveBtn.style.background = '#dcfce7'; // Light green
+        saveBtn.style.color = '#166534';
+        saveBtn.disabled = true;
+      } else if (response && response.duplicate) {
+        saveBtn.textContent = 'Saved';
+        saveBtn.disabled = true;
+      }
+    });
   });
 }
 

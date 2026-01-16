@@ -26,7 +26,7 @@ var allLangs = [
 ].sort((a, b) => a.name.localeCompare(b.name));
 
 var showAll = false;
-var currentLang = 'ru';
+var currentLang = 'auto';
 
 var langSelected = document.getElementById('langSelected');
 var langText = document.getElementById('langText');
@@ -92,7 +92,7 @@ function updateStatusText() {
     statusText.textContent = enableToggle.checked ? 'ON' : 'OFF';
 }
 
-chrome.storage.sync.get(['enabled', 'language', 'showGrammar'], function (result) {
+chrome.storage.sync.get(['enabled', 'language', 'showGrammar', 'highlightWords'], function (result) {
     // Default to true if undefined
     enableToggle.checked = (result.enabled !== false);
     updateStatusText();
@@ -104,6 +104,7 @@ chrome.storage.sync.get(['enabled', 'language', 'showGrammar'], function (result
     }
     // Default to true if undefined
     document.getElementById('showGrammar').checked = (result.showGrammar !== false);
+    document.getElementById('highlightWords').checked = (result.highlightWords !== false);
 });
 
 enableToggle.addEventListener('change', function (e) {
@@ -113,6 +114,10 @@ enableToggle.addEventListener('change', function (e) {
 
 document.getElementById('showGrammar').addEventListener('change', function (e) {
     chrome.storage.sync.set({ showGrammar: e.target.checked });
+});
+
+document.getElementById('highlightWords').addEventListener('change', function (e) {
+    chrome.storage.sync.set({ highlightWords: e.target.checked });
 });
 
 function loadWords() {
@@ -126,11 +131,32 @@ function loadWords() {
             return;
         }
         count.textContent = words.length + ' words';
-        list.innerHTML = words.slice().reverse().map(function (w) {
-            return '<div class="word-item"><span class="word-text">' + w.base + '</span><span class="word-trans">' + (w.translation || '') + '</span></div>';
+        list.innerHTML = words.slice().reverse().map(function (w, index) {
+            // Store original index for deletion (since we reverse the display)
+            var originalIndex = words.length - 1 - index;
+            return '<div class="word-item">' +
+                '<div class="word-content">' +
+                    '<span class="word-text">' + w.base + '</span>' +
+                    '<span class="word-trans">' + (w.translation || '') + '</span>' +
+                '</div>' +
+                '<span class="word-delete" data-index="' + originalIndex + '">×</span>' +
+                '</div>';
         }).join('');
     });
 }
+
+document.getElementById('wordList').addEventListener('click', function(e) {
+    if (e.target.classList.contains('word-delete')) {
+        var index = parseInt(e.target.dataset.index, 10);
+        chrome.storage.local.get(['savedWords'], function(result) {
+            var words = result.savedWords || [];
+            if (index >= 0 && index < words.length) {
+                words.splice(index, 1);
+                chrome.storage.local.set({ savedWords: words }, loadWords);
+            }
+        });
+    }
+});
 
 document.getElementById('export').addEventListener('click', function () {
     chrome.storage.local.get(['savedWords'], function (result) {

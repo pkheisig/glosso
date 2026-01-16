@@ -29,7 +29,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
   if (request.action === 'getLanguage') {
     chrome.storage.sync.get('language', (data) => {
-      sendResponse({ language: data.language || 'es' });
+      sendResponse({ language: data.language || 'auto' });
     });
     return true;
   }
