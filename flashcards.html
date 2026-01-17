@@ -24,6 +24,13 @@
         </label>
       </div>
 
+      <!-- Favorites Deck -->
+      <div id="favoritesDeck" class="favorites-deck empty">
+        <span class="fav-icon">★</span>
+        <span class="fav-label">Favorites</span>
+        <span id="favoritesCount" class="fav-count">0</span>
+      </div>
+
       <div class="sidebar-section">
         <div class="section-header">Decks</div>
         <div class="deck-list" id="deckList">
@@ -32,7 +39,8 @@
       </div>
 
       <div class="sidebar-footer">
-        <button id="toggleTheme" class="btn-icon" title="Toggle theme">◐</button>
+        <button id="settingsBtn" class="btn-icon btn-icon-lg" title="Settings">⚙</button>
+        <button id="toggleTheme" class="btn-icon btn-icon-lg" title="Toggle theme">◐</button>
       </div>
     </aside>
 
@@ -89,8 +97,15 @@
             </div>
           </div>
 
+          <!-- Typing Mode Area -->
+          <div id="typingArea" class="typing-area" style="display: none;">
+            <input type="text" id="typingInput" class="typing-input" placeholder="Type your answer...">
+            <div id="correctFeedback" class="correct-feedback" style="display: none;">✓ Correct!</div>
+          </div>
+
           <div class="nav-buttons">
             <button id="prevBtn" class="nav-btn" disabled>←</button>
+            <button id="typingToggle" class="typing-toggle" title="Toggle typing mode">⌨️</button>
             <span class="nav-hint">Space to flip</span>
             <button id="nextBtn" class="nav-btn">→</button>
           </div>
@@ -103,7 +118,9 @@
               <span class="search-icon">🔍</span>
               <input type="text" id="searchInput" placeholder="Search cards...">
             </div>
-            <button id="revealAllBtn" class="btn btn-secondary">Reveal All</button>
+            <button id="shuffleListBtn" class="btn btn-secondary">🔀 Shuffle</button>
+            <button id="resetListBtn" class="btn btn-secondary">↺ Reset</button>
+            <button id="revealAllBtn" class="btn btn-secondary">👁 Reveal All</button>
           </div>
           <div id="cardList" class="card-list"></div>
         </div>
@@ -156,6 +173,30 @@
       <div class="modal-footer">
         <button id="cancelCsv" class="btn btn-secondary">Cancel</button>
         <button id="confirmCsv" class="btn btn-primary">Import</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="settingsModal" class="modal" style="display: none;">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content modal-wide">
+      <div class="modal-header">
+        <h3>Settings</h3>
+        <button class="modal-close" data-close="settingsModal">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="settings-section">
+          <div class="settings-label">Theme Color</div>
+          <div class="theme-picker">
+            <div class="theme-circle blue" data-theme="blue"></div>
+            <div class="theme-circle purple" data-theme="purple"></div>
+            <div class="theme-circle pink" data-theme="pink"></div>
+            <div class="theme-circle orange" data-theme="orange"></div>
+            <div class="theme-circle green" data-theme="green"></div>
+            <div class="theme-circle teal" data-theme="teal"></div>
+            <div class="theme-circle indigo active" data-theme="indigo"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
